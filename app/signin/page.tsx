@@ -1,10 +1,7 @@
 "use client";
 import SignupForm from "@/components/signup-form";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
-export default function () {
-  const router = useRouter();
+export default function Signup() {
 
   return (
     <div>

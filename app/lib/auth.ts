@@ -1,29 +1,47 @@
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import prisma from '@/app/lib/prisma';
-import bcrypt from 'bcryptjs';
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import prisma from "@/app/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export const NEXT_AUTH_CONFIG = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-        // Check if the user exists
-        const user = await prisma.user.findUnique({
+        // check if user already exists 
+        let user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        // If user exists, verify password
-        if (user && await bcrypt.compare(credentials.password, user.password)) {
+        if (!user) {
+          const hashedPassword = await bcrypt.hash(credentials.password, 12);
+
+          user = await prisma.user.create({
+            data: {
+              email: credentials.email,
+              password: hashedPassword,
+              name: credentials.name,
+            },
+          });
+
           return { id: user.id, email: user.email, username: user.name };
         }
-
-        // If user does not exist or password does not match
-        return null;
+        if (user.password && credentials.password) {
+          const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+          if (isValidPassword) {
+            return { id: user.id, email: user.email, username: user.name };
+          } else {
+            // Invalid password
+            throw new Error("Invalid email or password");
+          }
+        } else {
+          // If user password is not present or credentials password is missing
+          throw new Error("Invalid email or password");
+        }
       },
     }),
     GoogleProvider({
@@ -33,10 +51,10 @@ export const NEXT_AUTH_CONFIG = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
-    })
+          response_type: "code",
+        },
+      },
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
@@ -52,9 +70,8 @@ export const NEXT_AUTH_CONFIG = {
       }
       return session;
     },
-    async signIn({ account, profile, credentials }: { account: any; profile: any; credentials: any }) {
+    async signIn({ user, account, profile }: any) {
       if (account.provider === "google") {
-        // Create or update user in database
         if (profile.email_verified && profile.email.endsWith("@gmail.com")) {
           let user = await prisma.user.findUnique({
             where: { email: profile.email },
@@ -74,35 +91,12 @@ export const NEXT_AUTH_CONFIG = {
           return true;
         }
         return false;
-      } else if (credentials) {
-        // Handle sign-up logic
-        const { email, password } = credentials;
-
-        let user = await prisma.user.findUnique({
-          where: { email },
-        });
-
-        if (!user) {
-          // Hash the password before storing
-          const hashedPassword = await bcrypt.hash(password, 12);
-
-          await prisma.user.create({
-            data: {
-              email,
-              password: hashedPassword,
-            },
-          });
-
-          return { email };
-        }
-        
-        // If user already exists
-        return false;
       }
+
       return true;
     },
   },
   pages: {
-    signIn: "/signin"
-  }
+    signIn: "/signin",
+  },
 };

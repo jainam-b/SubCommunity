@@ -11,6 +11,7 @@ export default function SignupForm() {
   const [userDetails, setuserDetails] = useState({
     email: "jb@gmail.com",
     password: "123456",
+    name:"jainam"
   });
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,7 +20,8 @@ export default function SignupForm() {
     try {
       // Make an asynchronous call to the signIn function
       const res = await signIn("credentials", {
-        username: userDetails.email,  
+        email: userDetails.email, 
+        name:userDetails.name, 
         password: userDetails.password,  
         redirect: false,  
       });
@@ -51,6 +53,17 @@ export default function SignupForm() {
       </p>
 
       <form className="my-8" onSubmit={handleSubmit}>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="email">Username</Label>
+          <Input
+            id="username"
+            onChange={(e) => {
+              setuserDetails({ ...userDetails, name: e.target.value });
+            }}
+            placeholder="john"
+            type="text"
+          />
+        </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input
