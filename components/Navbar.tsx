@@ -23,7 +23,7 @@ export function FloatingNavDemo() {
     },
   ];
   return (
-    <div className="relative  w-full hidden md:block">
+    <div className="relative  w-full ">
       <FloatingNav navItems={navItems} />
        
     </div>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import {SpotlightPreview} from "../components/SpotlightPreview"
 import { FloatingNavDemo } from "@/components/Navbar";
-import { NEXT_AUTH_CONFIG } from "@/lib/auth";
+import { NEXT_AUTH_CONFIG } from "@/app/lib/auth";
 import { getServerSession } from "next-auth"
 import { signIn } from "next-auth/react";
 async function getUser() {
