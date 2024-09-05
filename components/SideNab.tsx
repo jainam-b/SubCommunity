@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
-import { Dashboard } from "@/app/dashboard/page";
+
 import DesignContent from "./Dashboard/DesignContent";
 export function SidebarDemo() {
   const { data: session } = useSession();
@@ -141,3 +141,14 @@ export const LogoIcon = () => {
 const ConnectionsContent = () => <div>Connections Content</div>;
 const PricingContent = () => <div>Pricing Content</div>;
 const Users = () => <div>Analytics Content</div>;
+
+
+export const Dashboard = () => {
+   return (
+     <div className="flex flex-1">
+       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+        
+       </div>
+     </div>
+   );
+ };

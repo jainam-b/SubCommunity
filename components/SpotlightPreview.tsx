@@ -23,7 +23,7 @@ export function SpotlightPreview() {
           your Discord, WhatsApp or Slack. copy.
         </p>
         <div className="flex justify-center items-center mt-5 ">
-          <button onClick={()=>router.push("/auth")} className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 mx-3">
+          <button onClick={()=>router.push("/dashboard")} className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 mx-3">
             Get started free
           </button>
           <Button/>
