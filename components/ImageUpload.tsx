@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const ImageUpload = () => {
+const ImageUpload = ({ setDesignDetails }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -14,13 +14,23 @@ const ImageUpload = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target) {
-          setPreview(e.target.result as string);
+          const result = e.target.result as string;
+          setPreview(result);
+          // Update the imageUrl in designDetails state
+          setDesignDetails((prev) => ({
+            ...prev,
+            imageUrl: result,
+          }));
         }
       };
       reader.readAsDataURL(selectedFile);
     } else {
       setFile(null);
       setPreview(null);
+      setDesignDetails((prev) => ({
+        ...prev,
+        imageUrl: null,
+      }));
     }
   };
 
@@ -34,7 +44,7 @@ const ImageUpload = () => {
       <div className="max-w-xs">
         <div
           id="image-preview"
-          className="w-24 h-24 bg-gray-100 rounded-full cursor-pointer flex items-center justify-center"
+          className="w-24 h-24 bg-gray-100 rounded-full cursor-pointer flex items-center justify-center overflow-hidden"
           onClick={handleClick}
         >
           <input
@@ -47,8 +57,9 @@ const ImageUpload = () => {
           {preview ? (
             <img
               src={preview}
-              className="w-24 h-24 object-cover rounded-full"
+              className="w-full h-full object-cover rounded-full"
               alt="Image preview"
+              style={{ width: "96px", height: "96px", objectFit: "cover" }} // Enforce size to match the circle
             />
           ) : (
             <svg
