@@ -3,7 +3,7 @@ import {SpotlightPreview} from "../components/SpotlightPreview"
 import { FloatingNavDemo } from "@/components/Navbar";
 import { NEXT_AUTH_CONFIG } from "@/app/lib/auth";
 import { getServerSession } from "next-auth"
-import { signIn } from "next-auth/react";
+
 async function getUser() {
   const session = await getServerSession(NEXT_AUTH_CONFIG);
   return session;
@@ -20,5 +20,6 @@ export default async function Home() {
       </div>
        
     </div>
+    
   );
 }

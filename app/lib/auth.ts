@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
 
+
 export const NEXT_AUTH_CONFIG = {
   providers: [
     CredentialsProvider({

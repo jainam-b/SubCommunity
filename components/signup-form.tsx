@@ -6,32 +6,37 @@ import { cn } from "@/app/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setAuthState } from "@/app/slices/auth/authSlice"; // Import your action
 
 export default function SignupForm() {
   const [userDetails, setuserDetails] = useState({
     email: "jb@gmail.com",
     password: "123456",
-    name:"jainam"
+    name: "jainam",
   });
   const router = useRouter();
+  const dispatch = useDispatch(); // Get the dispatch function from Redux
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
     try {
       // Make an asynchronous call to the signIn function
       const res = await signIn("credentials", {
-        email: userDetails.email, 
-        name:userDetails.name, 
-        password: userDetails.password,  
-        redirect: false,  
+        email: userDetails.email,
+        name: userDetails.name,
+        password: userDetails.password,
+        redirect: false,
       });
 
       // Log the response from the signIn function
       console.log("SignIn Response:", res);
-      router.push("/api/user");
 
-      if (res && res.ok) {
+      if (res?.ok) {
         console.log("Successfully signed in!");
+        dispatch(setAuthState(true)); // Update the Redux state
+        router.push("/api/user");
       } else {
         console.error("Failed to sign in:", res?.error);
       }
@@ -111,7 +116,6 @@ export default function SignupForm() {
           <button
             onClick={async () => {
               await signIn("google");
-               
             }}
             className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
