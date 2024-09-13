@@ -8,7 +8,7 @@ const Preview = ({ designDetails }: { designDetails: any }) => {
       <Card
         title={designDetails.title}
         description={designDetails.description}
-        imageUrl={designDetails.imageUrl} // Preview the uploaded image
+        imageUrl={designDetails.imageUrl|| ""}
       />
     </div>
   );

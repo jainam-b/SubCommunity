@@ -1,20 +1,24 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, setDescription, setImageUrl } from "@/app/slices/design/designSlice";
+import { setTitle, setDescription, setImageUrl, DesignState } from "@/app/slices/design/designSlice";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ImageUpload from "../ImageUpload";
 import { RootState } from "@/app/lib/store";
 
-const Design = () => {
+interface DesignProps {
+  designDetails: DesignState;
+}
+
+const Design: React.FC<DesignProps> = ({ designDetails }) => {
   const dispatch = useDispatch();
-  const designDetails = useSelector((state: RootState) => state.design);
+  // const designDetails = useSelector((state: RootState) => state.design);
 
   useEffect(() => {
     console.log("Design component mounted with state:", designDetails);
-  }, []);
+  }, [designDetails]);
 
-  const handleInputChange = (e: { target: { name: any; value: any } }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "title") {
       console.log("Dispatching setTitle with:", value);
@@ -52,7 +56,7 @@ const Design = () => {
             onChange={handleInputChange}
             placeholder="Enter description"
           />
-          <button onClick={() => window.location.href = "/auth"}>Preview</button>
+          <button onClick={() => window.location.href = "/preview"}>Preview</button>
         </div>
       </div>
     </div>

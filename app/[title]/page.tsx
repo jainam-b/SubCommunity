@@ -1,19 +1,25 @@
-"use client"
-import { useParams } from 'next/navigation';
-import React from 'react';
+"use client";
+import React, { useEffect } from 'react';
+import Card from "@/components/Dashboard/Card";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
 
-const TitlePage = async () => {
-  const { title } = useParams();
+const Page = () => {
+  const design = useSelector((state: RootState) => state.design);
+
+  useEffect(() => {
+    console.log('Page component mounted with design state:', design);
+  }, []);
+
+  useEffect(() => {
+    console.log('Design state changed:', design);
+  }, [design.title, design.description, design.imageUrl]);
 
   return (
-    <div className="container mx-auto mt-10">
-      <h1 className="text-3xl font-bold text-center">Title Page</h1>
-      <div className="text-center mt-5">
-        <p>The title is: {title}</p>
-        {/* Here you can fetch and display content based on the title */}
-      </div>
+    <div className="flex h-screen justify-center items-center">
+      <Card title={design.title} description={design.description} imageUrl={design.imageUrl || ""} />
     </div>
   );
 };
 
-export default TitlePage;
+export default Page;

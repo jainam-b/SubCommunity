@@ -1,8 +1,10 @@
-"use client";
-
 import React, { useState } from "react";
 
-const ImageUpload = ({ setDesignDetails }) => {
+interface ImageUploadProps {
+  onUpload: (url: string) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -16,21 +18,14 @@ const ImageUpload = ({ setDesignDetails }) => {
         if (e.target) {
           const result = e.target.result as string;
           setPreview(result);
-          // Update the imageUrl in designDetails state
-          setDesignDetails((prev) => ({
-            ...prev,
-            imageUrl: result,
-          }));
+          onUpload(result); // Notify parent component of the new image URL
         }
       };
       reader.readAsDataURL(selectedFile);
     } else {
       setFile(null);
       setPreview(null);
-      setDesignDetails((prev) => ({
-        ...prev,
-        imageUrl: null,
-      }));
+      onUpload(""); // Notify parent component of the removal
     }
   };
 

@@ -7,7 +7,7 @@ import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setAuthState } from "@/app/slices/auth/authSlice"; // Import your action
+
 
 export default function SignupForm() {
   const [userDetails, setuserDetails] = useState({
@@ -35,7 +35,6 @@ export default function SignupForm() {
 
       if (res?.ok) {
         console.log("Successfully signed in!");
-        dispatch(setAuthState(true)); // Update the Redux state
         router.push("/api/user");
       } else {
         console.error("Failed to sign in:", res?.error);

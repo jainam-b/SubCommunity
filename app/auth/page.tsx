@@ -17,7 +17,7 @@ const Page = () => {
 
   return (
     <div className="flex gap border border-1 border-black p-20">
-      <Card title={design.title} description={design.description} imageUrl={design.imageUrl} />
+      <Card title={design.title} description={design.description} imageUrl={design.imageUrl || ""} />
     </div>
   );
 };
