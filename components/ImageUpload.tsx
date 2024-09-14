@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface ImageUploadProps {
   onUpload: (url: string) => void;
@@ -7,6 +7,15 @@ interface ImageUploadProps {
 const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
+  // On component mount, load the image from localStorage
+  useEffect(() => {
+    const savedImage = localStorage.getItem("uploadedImage");
+    if (savedImage) {
+      setPreview(savedImage);
+      onUpload(savedImage); // Trigger the onUpload callback with saved image
+    }
+  }, [onUpload]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files ? event.target.files[0] : null;
@@ -18,14 +27,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload }) => {
         if (e.target) {
           const result = e.target.result as string;
           setPreview(result);
-          onUpload(result); // Notify parent component of the new image URL
+          localStorage.setItem("uploadedImage", result); // Save image to localStorage
+          onUpload(result); 
         }
       };
       reader.readAsDataURL(selectedFile);
     } else {
       setFile(null);
       setPreview(null);
-      onUpload(""); // Notify parent component of the removal
+      localStorage.removeItem("uploadedImage"); // Clear localStorage if no file
+      onUpload(""); 
     }
   };
 
@@ -54,7 +65,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload }) => {
               src={preview}
               className="w-full h-full object-cover rounded-full"
               alt="Image preview"
-              style={{ width: "96px", height: "96px", objectFit: "cover" }} // Enforce size to match the circle
+              style={{ width: "96px", height: "96px", objectFit: "cover" }}
             />
           ) : (
             <svg
