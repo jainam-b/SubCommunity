@@ -8,11 +8,11 @@ const DesignContent: React.FC = () => {
   const designDetails = useSelector((state: RootState) => state.design);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mx-4">
-      <div className="mt-4 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div>
         <Design designDetails={designDetails} />
       </div>
-      <div className="mt-10 md:mt-4">
+      <div>
         <Preview designDetails={designDetails} />
       </div>
     </div>

@@ -1,13 +1,21 @@
+// components/Profile.js
 "use client"
+import { RootState } from '@/app/lib/store';
+import { useSelector } from 'react-redux';
 
-import { signOut, useSession } from "next-auth/react";
+const  page= () => {
+  const { isLoggedIn, user } = useSelector((state:RootState) => state.auth);
 
-export default function Home() {
-  const session = useSession();
   return (
     <div>
-      {JSON.stringify(session.data?.user)}
-      <button onClick={()=>signOut()} >Logout</button>
+      {isLoggedIn ? (
+        <h1>Welcome, {user.name}</h1>
+        
+      ) : (
+        <h1>Please log in</h1>
+      )}
     </div>
   );
-}
+};
+
+export default page;

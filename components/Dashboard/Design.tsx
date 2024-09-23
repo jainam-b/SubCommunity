@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import ImageUpload from "../ImageUpload";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/app/lib/store";
+import Feature from "./Feature";
 
 interface DesignProps {
   designDetails: DesignState;
@@ -48,9 +49,9 @@ const Design: React.FC<DesignProps> = ({ designDetails }) => {
   return (
     <div className="flex flex-col space-y-4">
       <h1 className="semibold text-xl">Design</h1>
-      <div className="mt-10">
+      <div className="mt-10 mb-4">
         <ImageUpload onUpload={handleImageUpload} />
-        <div className="mt-10 mx-6 sm:mx-0">
+        <div className="mt-10 mb-4 mx-6 sm:mx-0">
           <Label htmlFor="title">Title</Label>
           <Input
             id="title"
@@ -59,7 +60,7 @@ const Design: React.FC<DesignProps> = ({ designDetails }) => {
             onChange={handleInputChange}
             placeholder="Enter title"
           />
-          <Label htmlFor="description">Description</Label>
+          <div className="mt-4"><Label htmlFor="description">Description</Label></div>
           <Input
             id="description"
             name="description"
@@ -76,6 +77,8 @@ const Design: React.FC<DesignProps> = ({ designDetails }) => {
          </div>
          )}
         </div>
+        {/* <div><button onClick={()=>{window.location.href=("/preview")}}>Publish </button></div> */}
+        <Feature/>
       </div>
     </div>
   );
