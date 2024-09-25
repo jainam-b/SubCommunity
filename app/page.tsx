@@ -12,7 +12,7 @@ export default async function Home() {
 
   const session = await getUser();
   return (
-    <div>
+    <div >
       <FloatingNavDemo/>
       <div className="mt-5">
 

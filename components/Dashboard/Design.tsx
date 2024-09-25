@@ -47,11 +47,11 @@ const Design: React.FC<DesignProps> = ({ designDetails }) => {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 ">
       <h1 className="semibold text-xl">Design</h1>
       <div className="mt-10 mb-4">
         <ImageUpload onUpload={handleImageUpload} />
-        <div className="mt-10 mb-4 mx-6 sm:mx-0">
+        <div className="mt-10 mb-4 mx-6 sm:mx-0 text-black">
           <Label htmlFor="title">Title</Label>
           <Input
             id="title"
@@ -78,8 +78,8 @@ const Design: React.FC<DesignProps> = ({ designDetails }) => {
          )}
         </div>
         {/* <div><button onClick={()=>{window.location.href=("/preview")}}>Publish </button></div> */}
-        <Feature/>
       </div>
+        <Feature/>
     </div>
   );
 };

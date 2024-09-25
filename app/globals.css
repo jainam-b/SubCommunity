@@ -3,8 +3,28 @@
 @tailwind utilities;
 
 body{
-    background-color: black;
-    color: white;
+    /* background-color: black; */
+    /* color: w; */
+    
+    /* overflow: auto; */
     margin: 0;
     font-family: sans-serif;
 }
+/* In your global CSS file */
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+  }
+  
+  .scrollbar-hidden {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+  

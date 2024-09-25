@@ -5,7 +5,7 @@ const Preview = ({ designDetails }: { designDetails: any }) => {
   return (
     <div>
       <h1 className="semibold text-xl mb-6">Preview</h1>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center shadow-lg bg-white rounded-xl  items-center">
         <Card
           title={designDetails.title}
           description={designDetails.description}

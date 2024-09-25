@@ -46,7 +46,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload }) => {
       <div className="max-w-xs">
         <div
           id="image-preview"
-          className="w-24 h-24 bg-gray-100 rounded-full cursor-pointer flex items-center justify-center overflow-hidden"
+          className="w-24 border-black border-2  h-24 bg-gray-100 rounded-full cursor-pointer flex items-center justify-center overflow-hidden"
           onClick={handleClick}
           style={{
             backgroundImage: preview ? `url(${preview})` : 'none',
