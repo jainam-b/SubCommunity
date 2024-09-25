@@ -16,7 +16,7 @@ const Page = () => {
   }, [design.title, design.description, design.imageUrl]);
 
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen justify-center bg-white items-center">
       <Card title={design.title} description={design.description} imageUrl={design.imageUrl || ""} />
     </div>
   );
