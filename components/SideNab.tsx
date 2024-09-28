@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 import {
@@ -14,7 +14,20 @@ import { cn } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
 
 import DesignContent from "./Dashboard/DesignContent";
+import { Button } from "./ui/button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
 export function SidebarDemo() {
+  const { publishName } = useSelector((state: RootState) => state.auth);
+  const handlePreviewClick = () => {
+    if (publishName) {
+      window.open(`https://sub-community.vercel.app/${publishName}`, '_blank');
+    } else {
+      console.error('Publish name is not available');
+      // You might want to show an error message to the user here
+    }
+  };
+
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("Design");
   const [open, setOpen] = useState(false);
@@ -44,11 +57,8 @@ export function SidebarDemo() {
     {
       label: "Users",
       href: "#",
-      icon: (
-        <IconSettings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
-      ),
+      icon: <IconSettings className="text-neutral-700 h-5 w-5 flex-shrink-0" />,
     },
-    
   ];
 
   return (
@@ -77,6 +87,11 @@ export function SidebarDemo() {
             </div>
           </div>
           <div>
+            <div>
+              <button className="inline-flex h-12 animate-shimmer items-center justify-center rounded-lg mb-4 w-4/5 border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-white  transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50" onClick={handlePreviewClick}>
+                Preview
+              </button>
+            </div>
             <SidebarLink
               link={{
                 label: session?.user?.name || "User",
@@ -142,13 +157,10 @@ const ConnectionsContent = () => <div>Connections Content</div>;
 const PricingContent = () => <div>Pricing Content</div>;
 const Users = () => <div>Analytics Content</div>;
 
-
 export const Dashboard = () => {
-   return (
-     <div className="flex flex-1">
-       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        
-       </div>
-     </div>
-   );
- };
+  return (
+    <div className="flex flex-1">
+      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full"></div>
+    </div>
+  );
+};

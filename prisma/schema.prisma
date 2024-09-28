@@ -18,5 +18,14 @@ model User {
   email    String  @unique
   name     String?
   image    String?
-  password String? // Store hashed password
+  password String? 
+  publishName String @unique 
+}
+
+model Design {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String
+  createdAt   DateTime @default(now())
 }

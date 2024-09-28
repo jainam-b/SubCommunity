@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
 
-
 export const NEXT_AUTH_CONFIG = {
   providers: [
     CredentialsProvider({
@@ -13,34 +12,29 @@ export const NEXT_AUTH_CONFIG = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-        // check if user already exists 
         let user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
-
         if (!user) {
           const hashedPassword = await bcrypt.hash(credentials.password, 12);
-
           user = await prisma.user.create({
             data: {
               email: credentials.email,
               password: hashedPassword,
               name: credentials.name,
+              publishName: credentials.publishName
             },
           });
-
-          return { id: user.id, email: user.email, username: user.name };
+          return { id: user.id, email: user.email, name: user.name, publishName: user.publishName };
         }
         if (user.password && credentials.password) {
           const isValidPassword = await bcrypt.compare(credentials.password, user.password);
           if (isValidPassword) {
-            return { id: user.id, email: user.email, username: user.name };
+            return { id: user.id, email: user.email, name: user.name, publishName: user.publishName };
           } else {
-            // Invalid password
             throw new Error("Invalid email or password");
           }
         } else {
-          // If user password is not present or credentials password is missing
           throw new Error("Invalid email or password");
         }
       },
@@ -59,15 +53,17 @@ export const NEXT_AUTH_CONFIG = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ user, token }: any) {
+    async jwt({ token, user, account }: any) {
       if (user) {
         token.uid = user.id;
+        token.publishName = user.publishName;
       }
       return token;
     },
     async session({ session, token }: any) {
       if (session.user) {
         session.user.id = token.uid;
+        session.user.publishName = token.publishName;
       }
       return session;
     },
@@ -77,23 +73,21 @@ export const NEXT_AUTH_CONFIG = {
           let user = await prisma.user.findUnique({
             where: { email: profile.email },
           });
-
           if (!user) {
-            await prisma.user.create({
+            user = await prisma.user.create({
               data: {
                 id: profile.sub,
                 email: profile.email,
                 name: profile.name,
                 image: profile.picture,
+                publishName: profile.name // Using name as publishName for Google sign-in
               },
             });
           }
-
           return true;
         }
         return false;
       }
-
       return true;
     },
   },

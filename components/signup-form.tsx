@@ -7,64 +7,89 @@ import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { setUserInfo } from "@/app/slices/auth/authSlice";
 
 export default function SignupForm() {
-  const [userDetails, setuserDetails] = useState({
-    email: "jb@gmail.com",
-    password: "123456",
-    name: "jainam",
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: "",
+    name: "",
+    publishName: ""
   });
+  const [error, setError] = useState<string | null>(null);
+  
   const router = useRouter();
-  const dispatch = useDispatch(); // Get the dispatch function from Redux
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
+    setError(null);
+
+    // Check for empty fields
+    if (!userDetails.email || !userDetails.password || !userDetails.name || !userDetails.publishName) {
+      setError("All fields are required.");
+      return;
+    }
 
     try {
-      // Make an asynchronous call to the signIn function
       const res = await signIn("credentials", {
         email: userDetails.email,
         name: userDetails.name,
         password: userDetails.password,
+        publishName: userDetails.publishName,
         redirect: false,
       });
 
-      // Log the response from the signIn function
-      console.log("SignIn Response:", res);
-
       if (res?.ok) {
-        console.log("Successfully signed in!");
-        router.push("/api/user");
+        dispatch(setUserInfo(userDetails));
+        console.log("Successfully signed up!");
+        router.push("/dashboard");
       } else {
-        console.error("Failed to sign in:", res?.error);
+        setError(res?.error || "Failed to sign up. Please try again.");
       }
     } catch (error) {
-      console.error("An error occurred during sign-in:", error);
+      console.error("An error occurred during sign-up:", error);
+      setError("An unexpected error occurred. Please try again later.");
     }
-
-    console.log("User Details:", userDetails);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setUserDetails(prev => ({ ...prev, [id]: value }));
+  };
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/dashboard" });
+  };
+
+
   return (
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white">
+      <h2 className="font-bold text-xl text-neutral-800">
         Welcome to SubCommunity
       </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Please log in to SubCommunity to access your account and connect with
-        others!
+      <p className="text-neutral-600 text-sm max-w-sm mt-2">
+        Please sign up for SubCommunity to create your account and connect with others!
       </p>
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
+          <div className="flex">
+            <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mr-2" />
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        </div>
+      )}
 
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Username</Label>
+          <Label htmlFor="name">Username</Label>
           <Input
-            id="username"
-            onChange={(e) => {
-              setuserDetails({ ...userDetails, name: e.target.value });
-            }}
-            placeholder="john"
+            id="name"
+            value={userDetails.name}
+            onChange={handleInputChange}
+            placeholder="johndoe"
             type="text"
           />
         </LabelInputContainer>
@@ -72,27 +97,38 @@ export default function SignupForm() {
           <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
-            onChange={(e) => {
-              setuserDetails({ ...userDetails, email: e.target.value });
-            }}
-            placeholder="subcommunity@gmail.com"
+            value={userDetails.email}
+            onChange={handleInputChange}
+            placeholder="you@example.com"
             type="email"
           />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
           <Input
-            onChange={(e) => {
-              setuserDetails({ ...userDetails, password: e.target.value });
-            }}
             id="password"
+            value={userDetails.password}
+            onChange={handleInputChange}
             placeholder="••••••••"
             type="password"
           />
         </LabelInputContainer>
+        <LabelInputContainer className="mb-4">
+          <div className="flex items-center p-2">
+            <span className="font-semibold">subcommunity.app/</span>
+            <Input
+              id="publishName"
+              value={userDetails.publishName}
+              onChange={handleInputChange}
+              placeholder="yourname"
+              type="text"
+              className="border rounded-lg bg-slate-100 focus:ring-0 placeholder-font-semibold focus:outline-none pl-1"
+            />
+          </div>
+        </LabelInputContainer>
 
         <button
-          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+          className="bg-gradient-to-br relative group/btn bg-white dark:to-zinc-900 to-neutral-600 block w-full text-black border border-black rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
         >
           Sign up &rarr;
@@ -103,26 +139,21 @@ export default function SignupForm() {
 
         <div className="flex flex-col space-y-4">
           <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit"
+            className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-white rounded-md h-10 font-medium shadow-input bg-white-50 border border-black"
+            type="button"
+            onClick={() => signIn("github")}
           >
-            <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700  dark:text-neutral-300 text-sm">
-              GitHub
-            </span>
+            <IconBrandGithub className="h-4 w-4 text-neutral-800" />
+            <span className="text-neutral-700 text-sm">GitHub</span>
             <BottomGradient />
           </button>
           <button
-            onClick={async () => {
-              await signIn("google");
-            }}
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-white-50 border border-black"
             type="button"
+            onClick={handleGoogleSignIn}
           >
-            <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              Google
-            </span>
+            <IconBrandGoogle className="h-4 w-4 text-neutral-800" />
+            <span className="text-neutral-700 text-sm">Google</span>
             <BottomGradient />
           </button>
         </div>
@@ -131,11 +162,13 @@ export default function SignupForm() {
   );
 }
 
+// BottomGradient and LabelInputContainer components remain unchanged
+
 const BottomGradient = () => {
   return (
     <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-black to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-black to-transparent" />
     </>
   );
 };
